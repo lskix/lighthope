@@ -14,9 +14,10 @@ client = discord.Client()
 
 def calculateDelayTime(text):
     totalDelay = DELAY_BASE
-    for x in len(text):
-        if text[x] == " ":
+    for x in text:
+        if x == " ":
             totalDelay += 1
+    print(totalDelay)
     return totalDelay
 
 @client.event
