@@ -25,6 +25,8 @@ async def on_message(message):
     if message.author == client.user:
         return
     if message.channel.name== "catras-diary":
+        archiveChannel = client.get_channel(738415449582075924)
+        await archiveChannel.send(message.author.name +": "+ message.content)
         time.sleep(calculateDelayTime(message.content))
         await message.delete()
 
