@@ -24,6 +24,11 @@ def calculateDelayTime(text):
     return totalDelay
 
 
+
+async def log(string):
+    logChannel = client.get_channel(739170928805806202)
+    await logChannel.send(string)
+
 @client.event
 async def on_message(message):
     if message.author == client.user:
@@ -34,5 +39,8 @@ async def on_message(message):
         time.sleep(calculateDelayTime(message.content))
         await message.delete()
 
+@client.event
+async def on_ready():
+    await log("Lighthope OS is starting...")
 
 client.run(TOKEN)
