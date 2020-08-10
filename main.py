@@ -40,7 +40,10 @@ async def on_message(message):
         archiveChannel = dscClient.get_channel(738415449582075924)
         await archiveChannel.send(message.author.name + ": " + message.content)
         time.sleep(calculateDelayTime(message.content))
-        await message.delete()
+        try:
+            await message.delete()
+        except:
+            log("Someone deleted a message before me. Sneaky. System may reboot, this is normal behavior.")
 
     if "lighthope" in message.content:
         response = witClient.message(msg=message.content)
