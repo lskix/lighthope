@@ -43,7 +43,7 @@ async def on_message(message):
         try:
             await message.delete()
         except:
-            log("Someone deleted a message before me. Sneaky. System may reboot, this is normal behavior.")
+            await log("Someone deleted a message before me. Sneaky. System may reboot, this is normal behavior.")
 
     if "lighthope" in message.content:
         response = witClient.message(msg=message.content)
