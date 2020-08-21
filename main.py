@@ -1,6 +1,8 @@
 import os
 import time
 
+import wikiFunctions
+
 import discord
 from dotenv import load_dotenv
 
@@ -79,7 +81,11 @@ async def handle_message(response, channel):
         if "evelyn" in infoToGet or "evie" in infoToGet:
             text = "Evie is the programmer who created me!"
         else:
-            text = "That information has not yet loaded"
+            snippet = wikiFunctions.searchWiki(infoToGet)
+            if snippet != "":
+                text = snippet
+            else:
+                text = "That information has not yet loaded"
     else:
         text = "Query not recognised"
 
