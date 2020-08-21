@@ -46,8 +46,7 @@ async def on_message(message):
             await message.delete()
         except discord.errors.NotFound:
             await log("Someone deleted a message before me. Sneaky. System may reboot, this is normal behavior.")
-
-    if message.content.lower().startswith("lighthope") or message.content.lower().endswith("lighthope"):
+    elif message.content.lower().startswith("lighthope") or message.content.lower().endswith("lighthope"):
         response = witClient.message(msg=message.content)
         await handle_message(response, message.channel)
 
