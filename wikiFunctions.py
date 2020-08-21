@@ -8,7 +8,10 @@ def searchWiki(phrase):
     response = requests.get(searchUrl)
     data = json.loads(response.content.decode('utf-8'))
     snippet = ""
-    snippet = snippet + data['items'][0]['snippet'] + "... " + data['items'][0]['url']
+    try:
+        snippet = snippet + data['items'][0]['snippet'] + "... " + data['items'][0]['url']
+    except Exception:
+        snippet = "Sorry, that information has not yet loaded."
     re.sub('<[^<]+?>', '', snippet)
     return snippet
 
