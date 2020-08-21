@@ -31,7 +31,7 @@ def calculateDelayTime(text):
 
 async def log(string):
     logChannel = dscClient.get_channel(739170928805806202)
-    # await logChannel.send(string)
+    await logChannel.send(string)
 
 
 @dscClient.event
