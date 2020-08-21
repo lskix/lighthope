@@ -1,6 +1,8 @@
 import os
 import time
 
+import wikiFunctions
+
 import discord
 from dotenv import load_dotenv
 
@@ -42,7 +44,7 @@ async def on_message(message):
         time.sleep(calculateDelayTime(message.content))
         try:
             await message.delete()
-        except:
+        except discord.errors.NotFound:
             await log("Someone deleted a message before me. Sneaky. System may reboot, this is normal behavior.")
 
     if "lighthope" in message.content:
@@ -67,12 +69,23 @@ def first_value(traits, trait):
 async def handle_message(response, channel):
     greetings = first_value(response['traits'], 'wit$greetings')
     getInformation = first_value(response['traits'], 'getInformation')
-    text = "An error has occured in the Light Hopw operating system. Please contact Evelyn."
+    createSpiders = first_value(response['traits'], 'createSpiders')
+    text = "An error has occured in the Light Hope operating system. Please contact Evelyn."
     if greetings:
         text = "hello!"
+    elif createSpiders:
+        text = ":spider: Are spiders useful?"
     elif getInformation:
-        infoToGet = first_value(response['entities'], 'infoToGet')
-        print("A request for info was made")
+        infoToGet = first_value(response['entities'], 'infoToGet:infoToGet')
+        print("A request for info on " +infoToGet+"was made")
+        if "evelyn" in infoToGet or "evie" in infoToGet:
+            text = "Evie is the programmer who created me!"
+        else:
+            snippet = wikiFunctions.searchWiki(infoToGet)
+            if snippet != "":
+                text = snippet
+            else:
+                text = "That information has not yet loaded"
     else:
         text = "Query not recognised"
 
