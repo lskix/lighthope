@@ -29,7 +29,7 @@ def calculateDelayTime(text):
 
 async def log(string):
     logChannel = dscClient.get_channel(739170928805806202)
-    await logChannel.send(string)
+    # await logChannel.send(string)
 
 
 @dscClient.event
@@ -47,7 +47,7 @@ async def on_message(message):
 
     if "lighthope" in message.content:
         response = witClient.message(msg=message.content)
-        # await handle_message(response, message.channel)
+        await handle_message(response, message.channel)
 
 
 @dscClient.event
