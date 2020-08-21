@@ -1,5 +1,6 @@
 import json
 import requests
+import re
 
 def searchWiki(phrase):
 
@@ -8,4 +9,6 @@ def searchWiki(phrase):
     data = json.loads(response.content.decode('utf-8'))
     snippet = ""
     snippet = snippet + data['items'][0]['snippet'] + "... " + data['items'][0]['url']
+    re.sub('<[^<]+?>', '', snippet)
     return snippet
+
