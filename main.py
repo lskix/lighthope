@@ -6,6 +6,10 @@ import wikiFunctions
 import discord
 from dotenv import load_dotenv
 
+from profanity_check import predict_prob
+
+global blacklist
+
 from wit import Wit
 
 load_dotenv()
@@ -17,6 +21,8 @@ DELAY_BASE = 5
 
 dscClient = discord.Client()
 
+with open("blacklist.lhd", 'r') as dataObject:
+    blacklist = dataObject.readlines()
 
 def calculateDelayTime(text):
     totalDelay = DELAY_BASE
@@ -33,11 +39,25 @@ async def log(string):
     logChannel = dscClient.get_channel(739170928805806202)
     await logChannel.send(string)
 
+def messageContainsTriggerWord(message):
+    for word in blacklist:
+        if word in message.content:
+            return True
+    return False
+
+async def deleteBlacklistedMessage(message):
+    await message.delete()
+    await message.channel.send(message.author.mention + ", your message was deleted for containing a blacklisted/profane word.")
 
 @dscClient.event
 async def on_message(message):
     if message.author == dscClient.user:
         return
+    print(str(predict_prob([message.content])[0]) + " " + str(message.guild))
+    if predict_prob([message.content])[0] > .5 or messageContainsTriggerWord(message):
+
+        await deleteBlacklistedMessage(message)
+
     if message.channel.name == "catras-diary":
         archiveChannel = dscClient.get_channel(738415449582075924)
         await archiveChannel.send(message.author.name + ": " + message.content)
@@ -49,6 +69,7 @@ async def on_message(message):
     elif message.content.lower().startswith("lighthope") or message.content.lower().endswith("lighthope"):
         response = witClient.message(msg=message.content)
         await handle_message(response, message.channel)
+
 
 
 @dscClient.event
