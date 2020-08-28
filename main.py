@@ -12,6 +12,8 @@ global blacklist
 
 from wit import Wit
 
+started = False
+
 load_dotenv()
 DSC_TOKEN = os.getenv('DISCORD_TOKEN')
 WIT_TOKEN = os.getenv('WIT_TOKEN')
@@ -34,14 +36,17 @@ def calculateDelayTime(text):
     print(totalDelay)
     return totalDelay
 
+for word in blacklist:
+    print(word + " | " + word.replace(" ", ""))
 
 async def log(string):
     logChannel = dscClient.get_channel(739170928805806202)
     await logChannel.send(string)
 
 def messageContainsTriggerWord(message):
+    messageLower = " " + message.content.lower()
     for word in blacklist:
-        if word in message.content:
+        if word in messageLower or word.replace('\n', "") in messageLower or messageLower.startswith(word) or messageLower.endswith(word) or messageLower == word:
             return True
     return False
 
@@ -54,7 +59,7 @@ async def on_message(message):
     if message.author == dscClient.user:
         return
     print(str(predict_prob([message.content])[0]) + " " + str(message.guild))
-    if predict_prob([message.content])[0] > .5 or messageContainsTriggerWord(message):
+    if predict_prob([message.content])[0] > .78 or messageContainsTriggerWord(message):
 
         await deleteBlacklistedMessage(message)
 
@@ -74,7 +79,9 @@ async def on_message(message):
 
 @dscClient.event
 async def on_ready():
-    await log("Lighthope OS is starting...")
+    if not started:
+        started = True
+        await log("Lighthope OS is starting...")
 
 
 def first_value(traits, trait):
