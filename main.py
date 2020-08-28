@@ -12,7 +12,7 @@ global blacklist
 
 from wit import Wit
 
-started = False
+global started
 
 load_dotenv()
 DSC_TOKEN = os.getenv('DISCORD_TOKEN')
@@ -79,8 +79,6 @@ async def on_message(message):
 
 @dscClient.event
 async def on_ready():
-    if not started:
-        started = True
         await log("Lighthope OS is starting...")
 
 
