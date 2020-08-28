@@ -6,7 +6,13 @@ import wikiFunctions
 import discord
 from dotenv import load_dotenv
 
+from profanity_check import predict_prob
+
+global blacklist
+
 from wit import Wit
+
+global started
 
 load_dotenv()
 DSC_TOKEN = os.getenv('DISCORD_TOKEN')
@@ -17,6 +23,8 @@ DELAY_BASE = 5
 
 dscClient = discord.Client()
 
+with open("blacklist.lhd", 'r') as dataObject:
+    blacklist = dataObject.readlines()
 
 def calculateDelayTime(text):
     totalDelay = DELAY_BASE
@@ -28,16 +36,33 @@ def calculateDelayTime(text):
     print(totalDelay)
     return totalDelay
 
+for word in blacklist:
+    print(word + " | " + word.replace(" ", ""))
 
 async def log(string):
     logChannel = dscClient.get_channel(739170928805806202)
     await logChannel.send(string)
 
+def messageContainsTriggerWord(message):
+    messageLower = " " + message.content.lower()
+    for word in blacklist:
+        if word in messageLower or word.replace('\n', "") in messageLower or messageLower.startswith(word) or messageLower.endswith(word) or messageLower == word:
+            return True
+    return False
+
+async def deleteBlacklistedMessage(message):
+    await message.delete()
+    await message.channel.send(message.author.mention + ", your message was deleted for containing a blacklisted/profane word.")
 
 @dscClient.event
 async def on_message(message):
     if message.author == dscClient.user:
         return
+    print(str(predict_prob([message.content])[0]) + " " + str(message.guild))
+    if predict_prob([message.content])[0] > .78 or messageContainsTriggerWord(message):
+
+        await deleteBlacklistedMessage(message)
+
     if message.channel.name == "catras-diary":
         archiveChannel = dscClient.get_channel(738415449582075924)
         await archiveChannel.send(message.author.name + ": " + message.content)
@@ -51,9 +76,10 @@ async def on_message(message):
         await handle_message(response, message.channel)
 
 
+
 @dscClient.event
 async def on_ready():
-    await log("Lighthope OS is starting...")
+        await log("Lighthope OS is starting...")
 
 
 def first_value(traits, trait):
