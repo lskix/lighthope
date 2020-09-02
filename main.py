@@ -17,6 +17,7 @@ global started
 load_dotenv()
 DSC_TOKEN = os.getenv('DISCORD_TOKEN')
 WIT_TOKEN = os.getenv('WIT_TOKEN')
+DEL_THRES = os.getenv('THRESHOLD')
 
 RCHANNEL_ID = "catras-diary"
 DELAY_BASE = 5
@@ -59,7 +60,7 @@ async def on_message(message):
     if message.author == dscClient.user:
         return
     print(str(predict_prob([message.content])[0]) + " " + str(message.guild))
-    if predict_prob([message.content])[0] > .78 or messageContainsTriggerWord(message):
+    if predict_prob([message.content])[0] > DEL_THRES or messageContainsTriggerWord(message):
 
         await deleteBlacklistedMessage(message)
 
