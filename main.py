@@ -60,7 +60,7 @@ async def on_message(message):
     if message.author == dscClient.user:
         return
     print(str(predict_prob([message.content])[0]) + " " + str(message.guild))
-    if predict_prob([message.content])[0] > DEL_THRES or messageContainsTriggerWord(message):
+    if predict_prob([message.content])[0] > .79 or messageContainsTriggerWord(message):
 
         await deleteBlacklistedMessage(message)
 
